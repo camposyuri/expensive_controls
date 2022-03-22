@@ -10,7 +10,12 @@
   "keywords": [],
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.3"
+    "db-migrate": "^0.11.13",
+    "db-migrate-pg": "^1.2.2",
+    "express": "^4.17.3",
+    "pg": "^8.7.3",
+    "swagger-jsdoc": "^6.1.0",
+    "swagger-ui-express": "^4.3.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
