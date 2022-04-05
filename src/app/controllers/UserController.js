@@ -22,7 +22,6 @@ class UserController {
       response.json(user);
     } catch (error) {
       next(error);
-      logError(error);
     }
   }
 
