@@ -1,4 +1,3 @@
-const { logError } = require("../../config/errorHandler");
 const UserRepository = require("../repositories/UserRepository");
 
 class UserController {
@@ -25,9 +24,36 @@ class UserController {
     }
   }
 
-  async story() {}
+  async story(request, response) {
+    try {
+      const { email, password, status } = request.body;
 
-  async update() {}
+      if (!email || !password)
+        return response.status(400).json({ error: `Required information` });
+
+      const user = await UserRepository.create({ email, password, status });
+      return response.json(user);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async update(request, response) {
+    try {
+      const { id } = request.params;
+      const { email, password, status } = request.body;
+
+      const usersExists = await UserRepository.findId(id);
+
+      if (!usersExists)
+        return response.status(404).json({ error: "Users not found" });
+
+      const user = await UserRepository.update(id, { email, password, status });
+      return response.status(200).json({ success: "User" });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new UserController();

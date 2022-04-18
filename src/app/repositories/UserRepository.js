@@ -30,9 +30,35 @@ class UserRepository {
     return row;
   }
 
-  async create() {}
+  async create({ email, password, status }) {
+    const [row] = await db.query(
+      `
+        INSERT INTO users 
+          (email, password, status, datecreated)
+        VALUES 
+          ($1, $2, $3, now())
+        RETURNING id;
+      `,
+      [email, password, status]
+    );
 
-  async update() {}
+    return row;
+  }
+
+  async update(id, { email, password, status }) {
+    const [row] = await db.query(
+      `
+        UPDATE users
+          SET email = $1,
+          password = $2,
+          status = $3
+        WHERE id = $4;
+      `,
+      [email, password, status, id]
+    );
+
+    return row;
+  }
 }
 
 module.exports = new UserRepository();
