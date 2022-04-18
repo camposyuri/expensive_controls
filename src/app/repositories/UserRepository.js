@@ -14,7 +14,7 @@ class UserRepository {
     return rows;
   }
 
-  async findId(id) {
+  async findById(id) {
     const [row] = await db.query(
       `
         SELECT
@@ -52,7 +52,8 @@ class UserRepository {
           SET email = $1,
           password = $2,
           status = $3
-        WHERE id = $4;
+        WHERE id = $4
+        RETURNING id;
       `,
       [email, password, status, id]
     );

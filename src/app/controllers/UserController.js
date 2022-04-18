@@ -17,7 +17,7 @@ class UserController {
     try {
       const { id } = request.params;
 
-      const user = await UserRepository.findId(id);
+      const user = await UserRepository.findById(id);
       response.json(user);
     } catch (error) {
       next(error);
@@ -43,13 +43,15 @@ class UserController {
       const { id } = request.params;
       const { email, password, status } = request.body;
 
-      const usersExists = await UserRepository.findId(id);
+      const usersExists = await UserRepository.findById(id);
 
       if (!usersExists)
         return response.status(404).json({ error: "Users not found" });
 
       const user = await UserRepository.update(id, { email, password, status });
-      return response.status(200).json({ success: "User" });
+      return response
+        .status(200)
+        .json({ success: "User successfully updated" });
     } catch (error) {
       next(error);
     }
