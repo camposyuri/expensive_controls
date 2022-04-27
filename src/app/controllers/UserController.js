@@ -1,4 +1,5 @@
 const UserRepository = require("../repositories/UserRepository");
+const { encryptPassword } = require("../../utils/encrypt");
 
 class UserController {
   async index(request, response, next) {
@@ -24,34 +25,53 @@ class UserController {
     }
   }
 
-  async story(request, response) {
+  async store(request, response, next) {
     try {
-      const { email, password, status } = request.body;
+      let { email, password, status } = request.body;
+
+      const usersExists = UserRepository.findByEmail(email);
+
+      if (usersExists)
+        return response
+          .status(400)
+          .json({ error: "This e-mail is already in use." });
 
       if (!email || !password)
         return response.status(400).json({ error: `Required information` });
 
-      const user = await UserRepository.create({ email, password, status });
+      password = encryptPassword(password);
+
+      const user = await UserRepository.create({
+        email,
+        password,
+        status,
+      });
       return response.json(user);
     } catch (error) {
       next(error);
     }
   }
 
-  async update(request, response) {
+  async update(request, response, next) {
     try {
       const { id } = request.params;
-      const { email, password, status } = request.body;
+      let { email, password, status } = request.body;
+      password = encryptPassword(password);
 
       const usersExists = await UserRepository.findById(id);
 
       if (!usersExists)
         return response.status(404).json({ error: "Users not found" });
 
+      const usersByEmail = await UserRepository.findByEmail(email);
+
+      if (usersByEmail && String(usersByEmail.id) !== String(id))
+        return response
+          .status(400)
+          .json({ error: "This e-mail is already in use." });
+
       const user = await UserRepository.update(id, { email, password, status });
-      return response
-        .status(200)
-        .json({ success: "User successfully updated" });
+      return response.json(user);
     } catch (error) {
       next(error);
     }

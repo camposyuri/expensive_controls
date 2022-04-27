@@ -9,8 +9,8 @@ CREATE SEQUENCE users_iduser_seq
 
 CREATE TABLE IF NOT EXISTS users (
   id INTEGER NOT NULL DEFAULT nextval('users_iduser_seq'),
-  email VARCHAR(50) NOT NULL,
-  password VARCHAR(50) NOT NULL,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  password VARCHAR(100) NOT NULL,
   dateCreated TIMESTAMP NOT NULL,
   status BOOLEAN NOT NULL DEFAULT TRUE,
   CONSTRAINT pk_iduser PRIMARY KEY(id)

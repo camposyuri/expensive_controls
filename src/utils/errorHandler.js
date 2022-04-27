@@ -1,8 +1,8 @@
-const logError = (err) => console.error(err);
+const logError = (error) => console.error(error);
 
-const logErrorMiddleware = (err, req, response, next) => {
-  logError(err);
-  next(err);
+const logErrorMiddleware = (error, request, response, next) => {
+  logError(error);
+  next(error);
 };
 
 const returnError = (error, request, response, next) => {

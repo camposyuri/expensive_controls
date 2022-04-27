@@ -2,7 +2,7 @@ const express = require("express");
 // const swaggerJsDoc = require("swagger-jsdoc");
 // const swaggerUi = require("swagger-ui-express");
 
-const { logError, returnError } = require("./config/errorHandler");
+const { logError, returnError } = require("./utils/errorHandler");
 
 const router = require("./routes");
 const app = express();

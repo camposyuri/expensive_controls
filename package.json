@@ -5,11 +5,14 @@
   "main": "src/index.js",
   "author": "Yuri Campos",
   "scripts": {
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "dbup": "db-migrate up initialize --config src/database/database.json -m src/database/migrations",
+    "dbdown": "db-migrate down initialize --config src/database/database.json -m src/database/migrations"
   },
   "keywords": [],
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "db-migrate": "^0.11.13",
     "db-migrate-pg": "^1.2.2",
     "express": "^4.17.3",
