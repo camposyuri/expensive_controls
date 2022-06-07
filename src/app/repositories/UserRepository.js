@@ -48,7 +48,7 @@ class UserRepository {
             email,
             status
           FROM users
-          WHERE email ILIKE($1);
+          WHERE email = $1;
         `,
         [email]
       );
