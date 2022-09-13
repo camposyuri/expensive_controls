@@ -1,8 +1,12 @@
 const { Router } = require("express");
+const SignInController = require("./app/controllers/SignInController");
 
 const UserController = require("./app/controllers/UserController");
 
 const router = Router();
+
+// SignController
+router.post("/signin", SignInController.store);
 
 // UserController
 router.get("/users", UserController.index);
