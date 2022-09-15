@@ -15,7 +15,7 @@ class SignInController {
 			return response.status(400).send("Enter username and password!");
 
 		const usersExists = await SingInRepository.findByEmail(email);
-
+		// console.log({ usersExists });
 		if (!usersExists)
 			return response.status(400).json({ error: "User not found." });
 

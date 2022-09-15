@@ -39,7 +39,7 @@ class UserController {
 			if (!email || !password)
 				return response.status(400).json({ error: "Required information" });
 
-			password = encryptPassword(password);
+			password = await encryptPassword(password);
 
 			const user = await UserRepository.create({
 				email,
@@ -57,7 +57,7 @@ class UserController {
 		try {
 			const { id } = request.params;
 			let { email, password, status, admin } = request.body;
-			password = encryptPassword(password);
+			password = await encryptPassword(password);
 
 			const usersExists = await UserRepository.findById(id);
 
