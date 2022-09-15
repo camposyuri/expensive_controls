@@ -4,7 +4,7 @@ const { logError } = require("../../utils/errorHandler");
 class SignInRepository {
 	async findByEmail(email) {
 		try {
-			const row = await db.query(
+			const [row] = await db.query(
 				`
 					SELECT
 						id,

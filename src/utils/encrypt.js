@@ -5,9 +5,14 @@ const encryptPassword = (password) => {
 	return bcrypt.hashSync(password, salt);
 };
 
-const comparePassword = (password, hashPassword) => {
-	const isMatchPassword = bcrypt.compareSync(password, hashPassword);
-	return isMatchPassword;
+const comparePassword = async (password, hashPassword) => {
+	try {
+		const matchPassword = await bcrypt.compare(password, hashPassword);
+
+		return matchPassword;
+	} catch (error) {
+		console.log(error);
+	}
 };
 
 module.exports = {

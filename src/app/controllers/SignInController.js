@@ -1,5 +1,7 @@
-require("dotenv").config();
 const jwt = require("jwt-simple");
+// const bcrypt = require("bcrypt");
+
+require("dotenv").config();
 
 const { comparePassword } = require("../../utils/encrypt");
 
@@ -12,14 +14,17 @@ class SignInController {
 		if (!email && !password)
 			return response.status(400).send("Enter username and password!");
 
-		console.log({ email });
 		const usersExists = await SingInRepository.findByEmail(email);
-		console.log({ usersExists });
 
 		if (!usersExists)
 			return response.status(400).json({ error: "User not found." });
 
-		const isDeriredPassword = comparePassword(password, usersExists.password);
+		const isDeriredPassword = await comparePassword(
+			password,
+			usersExists.password
+		);
+
+		console.log({ a: isDeriredPassword });
 
 		if (!isDeriredPassword)
 			return response.status(401).send("Invalid email or password");
