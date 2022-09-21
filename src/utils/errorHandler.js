@@ -7,7 +7,9 @@ const logErrorMiddleware = (error, request, response, next) => {
 
 // eslint-disable-next-line no-unused-vars
 const returnError = (error, request, response, next) => {
-	response.status(error.statusCode || 500).json({ error: error.message });
+	return response
+		.status(error.statusCode || 500)
+		.json({ error: error.message });
 };
 
 module.exports = {

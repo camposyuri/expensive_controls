@@ -7,6 +7,7 @@ const router = Router();
 
 // SignController
 router.post("/signin", SignInController.store);
+router.post("/validate", SignInController.validateToken);
 
 // UserController
 router.get("/users", UserController.index);
