@@ -3,6 +3,8 @@ const SignInController = require("./app/controllers/SignInController");
 
 const UserController = require("./app/controllers/UserController");
 
+const authenticate = require("./utils/passport");
+
 const router = Router();
 
 // SignController
@@ -10,9 +12,9 @@ router.post("/signin", SignInController.store);
 router.post("/validate", SignInController.validateToken);
 
 // UserController
-router.get("/users", UserController.index);
-router.get("/users/:id", UserController.show);
-router.post("/users", UserController.store);
-router.put("/users/:id", UserController.update);
+router.get("/users", authenticate(), UserController.index);
+router.get("/users/:id", authenticate(), UserController.show);
+router.post("/users", authenticate(), UserController.store);
+router.put("/users/:id", authenticate(), UserController.update);
 
 module.exports = router;
