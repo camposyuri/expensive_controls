@@ -14,7 +14,7 @@ router.post("/validate", SignInController.validateToken);
 // UserController
 router.get("/users", authenticate(), UserController.index);
 router.get("/users/:id", authenticate(), UserController.show);
-router.post("/users", authenticate(), UserController.store);
+router.post("/users", UserController.store);
 router.put("/users/:id", authenticate(), UserController.update);
 
 module.exports = router;

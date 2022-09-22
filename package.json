@@ -1,31 +1,31 @@
 {
-  "name": "expensive_controls",
-  "version": "1.0.0",
-  "description": "Expensive controls",
-  "main": "src/index.js",
-  "author": "Yuri Campos",
-  "scripts": {
-    "dev": "nodemon src/index.js",
-    "dbup": "db-migrate up initialize --config src/database/database.json -m src/database/migrations",
-    "dbdown": "db-migrate down initialize --config src/database/database.json -m src/database/migrations"
-  },
-  "keywords": [],
-  "license": "ISC",
-  "dependencies": {
-    "bcrypt": "^5.0.1",
-    "db-migrate": "^0.11.13",
-    "db-migrate-pg": "^1.2.2",
-    "express": "^4.17.3",
-    "jwt-simple": "^0.5.6",
-    "passport": "^0.6.0",
-    "passport-jwt": "^4.0.0",
-    "pg": "^8.7.3",
-    "swagger-jsdoc": "^6.1.0",
-    "swagger-ui-express": "^4.3.0"
-  },
-  "devDependencies": {
-    "dotenv": "^16.0.0",
-    "eslint": "^8.23.1",
-    "nodemon": "^2.0.15"
-  }
+	"name": "expensive_controls",
+	"version": "1.0.0",
+	"description": "Expensive controls",
+	"main": "src/index.js",
+	"author": "Yuri Campos",
+	"scripts": {
+		"dev": "nodemon src/index.js",
+		"dbup": "db-migrate up 20220329231757-initialize-up --config src/database/database.json -m src/database/migrations/sqls",
+		"dbdown": "db-migrate down 20220329231757-initialize-down --config src/database/database.json -m src/database/migrations/sqls"
+	},
+	"keywords": [],
+	"license": "ISC",
+	"dependencies": {
+		"bcrypt": "^5.0.1",
+		"db-migrate": "^0.11.13",
+		"db-migrate-pg": "^1.2.2",
+		"express": "^4.17.3",
+		"jwt-simple": "^0.5.6",
+		"passport": "^0.6.0",
+		"passport-jwt": "^4.0.0",
+		"pg": "^8.7.3",
+		"swagger-jsdoc": "^6.1.0",
+		"swagger-ui-express": "^4.3.0"
+	},
+	"devDependencies": {
+		"dotenv": "^16.0.0",
+		"eslint": "^8.23.1",
+		"nodemon": "^2.0.15"
+	}
 }
