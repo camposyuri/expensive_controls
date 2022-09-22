@@ -6,8 +6,8 @@
 	"author": "Yuri Campos",
 	"scripts": {
 		"dev": "nodemon src/index.js",
-		"dbup": "db-migrate up 20220329231757-initialize-up --config src/database/database.json -m src/database/migrations/sqls",
-		"dbdown": "db-migrate down 20220329231757-initialize-down --config src/database/database.json -m src/database/migrations/sqls"
+		"dbup": "db-migrate up 20220329231757-initialize-up --config src/database/database.json -m src/database/migrations",
+		"dbdown": "db-migrate down 20220329231757-initialize-down --config src/database/database.json -m src/database/migrations"
 	},
 	"keywords": [],
 	"license": "ISC",

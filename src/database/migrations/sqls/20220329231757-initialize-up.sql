@@ -57,3 +57,23 @@ CREATE TABLE IF NOT EXISTS provider (
 	telephone VARCHAR(20),
 	phone VARCHAR(20) NOT NULL
 );
+
+DROP SEQUENCE IF EXISTS customer_idcustomer_seq;
+CREATE SEQUENCE customer_idcustomer_seq
+								INCREMENT 1
+								MINVALUE 1
+								MAXVALUE 9223372036854775807
+								START 1
+								CACHE 1;
+
+CREATE TABLE IF NOT EXISTS customer (
+	id INTEGER NOT NULL DEFAULT nextval('customer_idcustomer_seq'),
+	corporateName VARCHAR(250) NOT NULL,
+	fantasyName VARCHAR(250),
+	cpfCnpj VARCHAR(14) NOT NULL UNIQUE,
+	typePerson CHAR(1) NOT NULL DEFAULT 'J',
+	dateCreated TIMESTAMP NOT NULL,
+	status BOOLEAN NOT NULL DEFAULT TRUE,
+	telephone VARCHAR(20),
+	phone VARCHAR(20) NOT NULL
+);
