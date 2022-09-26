@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const PersonController = require("./app/controllers/PersonController");
 const SignInController = require("./app/controllers/SignInController");
 
 const UserController = require("./app/controllers/UserController");
@@ -17,5 +18,8 @@ router.get("/users", authenticate(), UserController.index);
 router.get("/users/:id", authenticate(), UserController.show);
 router.post("/users", authenticate(), UserController.store);
 router.put("/users/:id", authenticate(), UserController.update);
+
+//PersonController
+router.get("/person", authenticate(), PersonController.index);
 
 module.exports = router;

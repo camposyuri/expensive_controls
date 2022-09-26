@@ -99,8 +99,11 @@ CREATE TABLE IF NOT EXISTS address (
 	county VARCHAR(100) NOT NULL,
 	zipCode VARCHAR(9) NOT NULL,
 	uf CHAR(2) NOT NULL,
+	id_customer INTEGER NULL,
+	id_person INTEGER NULL,
+	id_provider INTEGER NULL,
 	CONSTRAINT pk_id_address PRIMARY KEY(id),
-	CONSTRAINT fk_id_customer FOREIGN KEY (id) REFERENCES customer(id),
-	CONSTRAINT fk_id_person FOREIGN KEY (id) REFERENCES person(id),
-	CONSTRAINT fk_id_provider FOREIGN KEY (id) REFERENCES provider(id)
+	CONSTRAINT fk_id_customer FOREIGN KEY (id_customer) REFERENCES customer(id),
+	CONSTRAINT fk_id_person FOREIGN KEY (id_person) REFERENCES person(id),
+	CONSTRAINT fk_id_provider FOREIGN KEY (id_provider) REFERENCES provider(id)
 );
