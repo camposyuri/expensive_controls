@@ -25,6 +25,35 @@ class PersonRepository {
 			logError(error);
 		}
 	}
+
+	async findById(id) {
+		try {
+			const [row] = await db.query(
+				`
+					SELECT
+						p.*,
+						a.id AS address_id,
+						a.publicplace,
+					a."number",
+					a.complement,
+					a.district,
+					a.county,
+					a.zipcode,
+					a.uf,
+					a.id_person
+				FROM
+					person p
+				INNER JOIN address a ON
+					a.id_person = p.id
+				WHERE p.id = $1;
+				`,
+				[id]
+			);
+			return row;
+		} catch (error) {
+			logError(error);
+		}
+	}
 }
 
 module.exports = new PersonRepository();

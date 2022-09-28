@@ -12,7 +12,16 @@ class PersonController {
 		}
 	}
 
-	async show() {}
+	async show(request, response, next) {
+		try {
+			const { id } = request.params;
+
+			const person = await PersonRepository.findById(id);
+			return response.json(person);
+		} catch (error) {
+			next(error);
+		}
+	}
 
 	async store() {}
 

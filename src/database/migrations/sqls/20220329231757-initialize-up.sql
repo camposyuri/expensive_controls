@@ -107,3 +107,65 @@ CREATE TABLE IF NOT EXISTS address (
 	CONSTRAINT fk_id_person FOREIGN KEY (id_person) REFERENCES person(id),
 	CONSTRAINT fk_id_provider FOREIGN KEY (id_provider) REFERENCES provider(id)
 );
+
+
+CREATE OR REPLACE FUNCTION public.CreatePerson(json_parametro json)
+RETURNS SETOF integer as $$
+DECLARE
+  codperson int;
+
+BEGIN
+  SET TIMEZONE TO 'America/Sao_Paulo';
+
+  -- Se existir a tabela dropa
+  DROP TABLE IF EXISTS tmp_person;
+  DROP TABLE IF EXISTS tmp_address;
+
+   -- Cria todas tabelas tempararias para consultar dados
+  CREATE TEMPORARY TABLE tmp_person(person_json json);
+  INSERT INTO tmp_person VALUES (json_parametro);
+
+  CREATE TEMPORARY TABLE tmp_address(address_json json);
+  INSERT INTO tmp_address SELECT (person_json::json -> 'endereco')::json AS Endereco
+  FROM tmp_person;
+
+  EXECUTE format('INSERT INTO person("name", cpfcnpj, rg, typeperson, birthdate, telephone, phone, datecreated, status)
+                      SELECT
+                        (person_json ->> %s)::varchar(250) as name,
+                        (person_json ->> %s)::varchar(14) as cpfCnpj,
+                        (person_json ->> %s)::varchar(9) as rg,
+                        (person_json ->> %s)::char(1) as typePerson,
+                        (person_json ->> %s)::timestamp as birthdate,
+                        (person_json ->> %s)::varchar(20) as telephone,
+                        (person_json ->> %s)::varchar(20) as phone,
+                        now(),
+                        (person_json ->> %s)::boolean as status
+                      FROM tmp_person
+                  RETURNING id;
+                ', '''name''', '''cpfcnpj''', '''rg''', '''typeperson''', '''birthdate''', '''telephone''', '''phone''', '''status''') INTO codperson;
+
+  IF codperson = 0 THEN
+    RAISE EXCEPTION 'Código pessoa não informado: %', codperson;
+  END IF;
+
+  EXECUTE format('INSERT INTO address(publicplace, "number", complement, district, county, zipcode, uf, id_customer, id_person, id_provider)
+                      SELECT
+                        (address_json ->> %s)::varchar(250) as publicPlace,
+                        (address_json ->> %s)::int as number,
+                        (address_json ->> %s)::varchar(150) as complement,
+                        (address_json ->> %s)::varchar(100) as district,
+                        (address_json ->> %s)::varchar(100) as county,
+                        (address_json ->> %s)::varchar(9) as zipCode,
+                        (address_json ->> %s)::char(2) as uf,
+                        (address_json ->> %s)::int as id_customer,
+                        (%s)::int as idPerson,
+                        (address_json ->> %s)::int as id_provider
+                      FROM tmp_address;
+                ', '''publicplace''', '''number''', '''complement''', '''district''', '''county''', '''zipcode''', '''uf''', '''id_customer''', codperson, '''id_provider''');
+  -- Removendo tabelas temporarias
+  DROP TABLE tmp_person;
+  DROP TABLE tmp_address;
+  RETURN NEXT codperson;
+
+END; $$
+LANGUAGE 'plpgsql';
