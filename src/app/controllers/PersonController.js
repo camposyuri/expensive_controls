@@ -1,3 +1,4 @@
+const AddressRepository = require("../repositories/AddressRepository");
 const PersonRepository = require("../repositories/PersonRepository");
 
 class PersonController {
@@ -17,13 +18,29 @@ class PersonController {
 			const { id } = request.params;
 
 			const person = await PersonRepository.findById(id);
-			return response.json(person);
+
+			const address = await AddressRepository.findAddress("id_person", id);
+
+			return response.json({ ...person, endereco: address });
 		} catch (error) {
 			next(error);
 		}
 	}
 
-	async store() {}
+	async store(request, response, next) {
+		try {
+			const personRequest = request.body;
+
+			const person = await PersonRepository.create(personRequest);
+
+			if (person <= 0)
+				return response.status(400).send("Problems creating person");
+
+			return response.json(person);
+		} catch (error) {
+			next(error);
+		}
+	}
 
 	async update() {}
 }

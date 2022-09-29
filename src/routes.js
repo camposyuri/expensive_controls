@@ -22,5 +22,6 @@ router.put("/users/:id", authenticate(), UserController.update);
 //PersonController
 router.get("/person", authenticate(), PersonController.index);
 router.get("/person/:id", authenticate(), PersonController.show);
+router.post("/person", authenticate(), PersonController.store);
 
 module.exports = router;
