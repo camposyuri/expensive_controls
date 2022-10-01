@@ -29,9 +29,9 @@ class PersonController {
 
 	async store(request, response, next) {
 		try {
-			const personRequest = request.body;
+			const personBody = request.body;
 
-			const person = await PersonRepository.create(personRequest);
+			const person = await PersonRepository.create(personBody);
 
 			if (person <= 0)
 				return response.status(400).send("Problems creating person");
@@ -42,7 +42,21 @@ class PersonController {
 		}
 	}
 
-	async update() {}
+	async update(request, response, next) {
+		try {
+			const { id } = request.params;
+			const personBody = request.body;
+
+			const person = await PersonRepository.update(id, personBody);
+
+			if (person <= 0)
+				return response.status(400).send("Problems updating person");
+
+			return response.json(person);
+		} catch (error) {
+			next(error);
+		}
+	}
 }
 
 module.exports = new PersonController();

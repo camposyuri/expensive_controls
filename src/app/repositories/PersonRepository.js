@@ -58,6 +58,21 @@ class PersonRepository {
 			logError(error);
 		}
 	}
+
+	async update(id, person) {
+		try {
+			const param_json = JSON.stringify(person);
+			const [row] = await db.query(
+				`
+					SELECT public.UpdatePerson($1::int, $2::json);
+				`,
+				[id, param_json]
+			);
+			return row;
+		} catch (error) {
+			logError(error);
+		}
+	}
 }
 
 module.exports = new PersonRepository();

@@ -9,8 +9,8 @@ class AddressRepository {
 					SELECT
 						*
 					FROM address a
-					WHERE a.${columnName} = ${id};
-				`
+					WHERE ${columnName} = $1;`,
+				[id]
 			);
 			return row;
 		} catch (error) {
