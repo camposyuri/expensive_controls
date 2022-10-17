@@ -12,7 +12,10 @@ class AddressRepository {
 					WHERE ${columnName} = $1;`,
 				[id]
 			);
-			return row;
+
+			if (row !== undefined) return row;
+
+			return null;
 		} catch (error) {
 			logError(error);
 		}
