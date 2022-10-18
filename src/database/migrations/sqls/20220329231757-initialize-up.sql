@@ -245,3 +245,139 @@ BEGIN
 
 END; $$
 LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION public.CreateProvider(json_parametro json)
+RETURNS SETOF integer as $$
+DECLARE
+  codprovider int;
+
+BEGIN
+  SET TIMEZONE TO 'America/Sao_Paulo';
+
+  -- Se existir a tabela dropa
+  DROP TABLE IF EXISTS tmp_provider;
+  DROP TABLE IF EXISTS tmp_address;
+
+   -- Cria todas tabelas tempararias para consultar dados
+  CREATE TEMPORARY TABLE tmp_provider(provider_json json);
+  INSERT INTO tmp_provider VALUES (json_parametro);
+
+  CREATE TEMPORARY TABLE tmp_address(address_json json);
+  INSERT INTO tmp_address SELECT (provider_json::json -> 'endereco')::json AS Endereco
+  FROM tmp_provider;
+
+  EXECUTE format('INSERT INTO provider(corporatename, fantasyname, cpfcnpj, typeperson, datecreated, status, telephone, phone)
+                      SELECT
+                        (provider_json ->> %s)::varchar(250) as corporateName,
+                        (provider_json ->> %s)::varchar(250) as fantasyName,
+                        (provider_json ->> %s)::varchar(14) as cpfCnpj,
+                        (provider_json ->> %s)::char(1) as typePerson,
+                        now(),
+                        (provider_json ->> %s)::boolean as status,
+                        (provider_json ->> %s)::varchar(20) as telephone,
+                        (provider_json ->> %s)::varchar(20) as phone
+                      FROM tmp_provider
+                  RETURNING id;
+                ', '''corporatename''', '''fantasyname''', '''cpfcnpj''', '''typeperson''', '''status''', '''telephone''', '''phone''') INTO codprovider;
+
+  IF codprovider = 0 THEN
+    RAISE EXCEPTION 'Código fornecedor não informado: %', codprovider;
+  END IF;
+
+  EXECUTE format('INSERT INTO address(publicplace, "number", complement, district, county, zipcode, uf, id_customer, id_person, id_provider)
+                      SELECT
+                        (address_json ->> %s)::varchar(250) as publicPlace,
+                        (address_json ->> %s)::int as number,
+                        (address_json ->> %s)::varchar(150) as complement,
+                        (address_json ->> %s)::varchar(100) as district,
+                        (address_json ->> %s)::varchar(100) as county,
+                        (address_json ->> %s)::varchar(9) as zipCode,
+                        (address_json ->> %s)::char(2) as uf,
+                        (address_json ->> %s)::int as id_customer,
+                        (address_json ->> %s)::int as id_person,
+                        (%s)::int as idProvider
+                      FROM tmp_address;
+                ', '''publicplace''', '''number''', '''complement''', '''district''', '''county''', '''zipcode''', '''uf''', '''id_customer''', '''id_person''', codprovider);
+  -- Removendo tabelas temporarias
+  DROP TABLE tmp_provider;
+  DROP TABLE tmp_address;
+  RETURN NEXT codprovider;
+
+END; $$
+LANGUAGE 'plpgsql';
+
+
+CREATE OR REPLACE FUNCTION public.UpdateProvider(codprovider int, json_parametro json)
+RETURNS SETOF integer as $$
+DECLARE
+
+BEGIN
+  SET TIMEZONE TO 'America/Sao_Paulo';
+
+  -- Se existir a tabela dropa
+  DROP TABLE IF EXISTS tmp_provider;
+  DROP TABLE IF EXISTS tmp_address;
+
+   -- Cria todas tabelas tempararias para consultar dados
+  CREATE TEMPORARY TABLE tmp_provider(provider_json json);
+  INSERT INTO tmp_provider VALUES (json_parametro);
+
+  CREATE TEMPORARY TABLE tmp_address(address_json json);
+  INSERT INTO tmp_address SELECT (provider_json::json -> 'endereco')::json AS Endereco
+  FROM tmp_provider;
+
+  IF codprovider = 0 THEN
+    RAISE EXCEPTION 'Código fornecedor não informado: %', codprovider;
+  END IF;
+
+EXECUTE format('UPDATE provider SET   corporateName       = tempprovider.corporateName,
+                                      fantasyname         = tempprovider.fantasyname,
+                                      cpfcnpj             = tempprovider.cpfcnpj,
+                                      typeperson          = tempprovider.typeperson,
+                                      status              = tempprovider.status,
+                                      telephone           = tempprovider.telephone,
+                                      phone               = tempprovider.phone
+                    FROM (SELECT
+                        (provider_json ->> %s)::varchar(250) as corporateName,
+                        (provider_json ->> %s)::varchar(250) as fantasyName,
+                        (provider_json ->> %s)::varchar(14) as cpfCnpj,
+                        (provider_json ->> %s)::char(1) as typePerson,
+                        now(),
+                        (provider_json ->> %s)::boolean as status,
+                        (provider_json ->> %s)::varchar(20) as telephone,
+                        (provider_json ->> %s)::varchar(20) as phone
+                      FROM tmp_provider) AS tempprovider
+                    WHERE id = (%s)::int
+                    RETURNING id;
+                ', '''corporatename''', '''fantasyname''', '''cpfcnpj''', '''typeperson''', '''status''', '''telephone''', '''phone''', codprovider);
+
+   EXECUTE format('UPDATE address SET publicplace  = tempaddress.publicplace,
+                                    "number"      = tempaddress."number",
+                                    complement    = tempaddress.complement,
+                                    district      = tempaddress.district,
+                                    county        = tempaddress.county,
+                                    zipcode       = tempaddress.zipcode,
+                                    uf            = tempaddress.uf,
+                                    id_customer   = tempaddress.id_customer,
+                                    id_person   = tempaddress.id_person
+                  FROM (SELECT
+                          (address_json ->> %s)::varchar(250) as publicPlace,
+                          (address_json ->> %s)::int as number,
+                          (address_json ->> %s)::varchar(150) as complement,
+                          (address_json ->> %s)::varchar(100) as district,
+                          (address_json ->> %s)::varchar(100) as county,
+                          (address_json ->> %s)::varchar(9) as zipCode,
+                          (address_json ->> %s)::char(2) as uf,
+                          (address_json ->> %s)::int as id_customer,
+                          (address_json ->> %s)::int as id_person
+                        FROM tmp_address) AS tempaddress
+                  WHERE id_provider = (%s)::int;
+                ', '''publicplace''', '''number''', '''complement''', '''district''', '''county''', '''zipcode''', '''uf''', '''id_customer''', '''id_person''', codprovider);
+
+  -- Removendo tabelas temporarias
+  DROP TABLE tmp_provider;
+  DROP TABLE tmp_address;
+  RETURN NEXT codprovider;
+
+END; $$
+LANGUAGE 'plpgsql';

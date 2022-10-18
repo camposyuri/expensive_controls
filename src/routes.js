@@ -29,5 +29,7 @@ router.put("/person/:id", authenticate(), PersonController.update);
 // ProviderController
 router.get("/provider", authenticate(), ProviderController.index);
 router.get("/provider/:id", authenticate(), ProviderController.show);
+router.post("/provider", authenticate(), ProviderController.store);
+router.put("/provider/:id", authenticate(), ProviderController.update);
 
 module.exports = router;

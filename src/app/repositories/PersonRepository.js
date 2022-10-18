@@ -17,7 +17,7 @@ class PersonRepository {
 					phone,
 					dateCreated,
 					status
-				FROM person ORDER BY name ${direction}
+				FROM person ORDER BY id ${direction}
 				`
 			);
 			return rows;
@@ -46,12 +46,12 @@ class PersonRepository {
 
 	async create(person) {
 		try {
-			const param_json = JSON.stringify(person);
+			const personJson = JSON.stringify(person);
 			const [row] = await db.query(
 				`
 					SELECT public.CreatePerson($1::json);
 				`,
-				[param_json]
+				[personJson]
 			);
 			return row;
 		} catch (error) {
@@ -61,12 +61,12 @@ class PersonRepository {
 
 	async update(id, person) {
 		try {
-			const param_json = JSON.stringify(person);
+			const personJson = JSON.stringify(person);
 			const [row] = await db.query(
 				`
 					SELECT public.UpdatePerson($1::int, $2::json);
 				`,
-				[id, param_json]
+				[id, personJson]
 			);
 			return row;
 		} catch (error) {

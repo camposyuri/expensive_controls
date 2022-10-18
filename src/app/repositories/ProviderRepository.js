@@ -17,7 +17,7 @@ class ProviderRepository {
 					telephone,
 					phone
 				FROM
-					provider ORDER BY corporatename ${direction};`
+					provider ORDER BY id ${direction};`
 			);
 
 			return rows;
@@ -37,6 +37,39 @@ class ProviderRepository {
 					WHERE p.id = $1;
 				`,
 				[id]
+			);
+
+			return row;
+		} catch (error) {
+			logError(error);
+		}
+	}
+
+	async create(provider) {
+		try {
+			const providerJson = JSON.stringify(provider);
+
+			const [row] = await db.query(
+				`
+					SELECT public.CreateProvider($1::json);
+				`,
+				[providerJson]
+			);
+			return row;
+		} catch (error) {
+			logError(error);
+		}
+	}
+
+	async update(id, provider) {
+		try {
+			const providerJson = JSON.stringify(provider);
+
+			const [row] = await db.query(
+				`
+					SELECT public.UpdateProvider($1::int, $2::json);
+				`,
+				[id, providerJson]
 			);
 
 			return row;
