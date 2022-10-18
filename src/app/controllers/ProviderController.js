@@ -4,7 +4,7 @@ const ProviderRepository = require("../repositories/ProviderRepository");
 class ProviderController {
 	async index(request, response, next) {
 		try {
-			const { orderBy } = request.params;
+			const { orderBy } = request.query;
 
 			const provider = await ProviderRepository.findAll(orderBy);
 			return response.json({ results: provider });

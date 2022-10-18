@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const CustomerController = require("./app/controllers/CustomerController");
 const PersonController = require("./app/controllers/PersonController");
 const ProviderController = require("./app/controllers/ProviderController");
 const SignInController = require("./app/controllers/SignInController");
@@ -31,5 +32,9 @@ router.get("/provider", authenticate(), ProviderController.index);
 router.get("/provider/:id", authenticate(), ProviderController.show);
 router.post("/provider", authenticate(), ProviderController.store);
 router.put("/provider/:id", authenticate(), ProviderController.update);
+
+// CustomerController
+router.get("/customer", authenticate(), CustomerController.index);
+router.get("/customer/:id", authenticate(), CustomerController.show);
 
 module.exports = router;
