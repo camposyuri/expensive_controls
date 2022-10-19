@@ -25,6 +25,21 @@ class CustomerController {
 			next(error);
 		}
 	}
+
+	async store(request, response, next) {
+		try {
+			const body = request.body;
+
+			const customer = await CustomerRepository.create(body);
+
+			if (customer <= 0)
+				return response.status(400).send("Problems creating customer");
+
+			return response.json(customer);
+		} catch (error) {
+			next(error);
+		}
+	}
 }
 
 module.exports = new CustomerController();

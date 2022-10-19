@@ -42,6 +42,23 @@ class CustomerRepository {
 			logError(error);
 		}
 	}
+
+	async create(customer) {
+		try {
+			const customerJson = JSON.stringify(customer);
+
+			const [row] = await db.query(
+				`
+						SELECT public.CreateCustomer($1::json);
+					`,
+				[customerJson]
+			);
+
+			return row;
+		} catch (error) {
+			logError(error);
+		}
+	}
 }
 
 module.exports = new CustomerRepository();
