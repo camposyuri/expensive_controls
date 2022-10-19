@@ -40,6 +40,22 @@ class CustomerController {
 			next(error);
 		}
 	}
+
+	async update(request, response, next) {
+		try {
+			const { id } = request.params;
+			const body = request.body;
+
+			const customer = await CustomerRepository.update(id, body);
+
+			if (customer <= 0)
+				return response.status(400).send("Problem updating customer");
+
+			return response.json(customer);
+		} catch (error) {
+			next(error);
+		}
+	}
 }
 
 module.exports = new CustomerController();

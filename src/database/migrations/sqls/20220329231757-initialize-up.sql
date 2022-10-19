@@ -441,3 +441,76 @@ BEGIN
 
 END; $$
 LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION public.UpdateCustomer(codcustomer int, json_parametro json)
+RETURNS SETOF integer as $$
+DECLARE
+
+BEGIN
+  SET TIMEZONE TO 'America/Sao_Paulo';
+  -- Se existir a tabela dropa
+  DROP TABLE IF EXISTS tmp_customer;
+  DROP TABLE IF EXISTS tmp_address;
+
+   -- Cria todas tabelas tempararias para consultar dados
+  CREATE TEMPORARY TABLE tmp_customer(customer_json json);
+  INSERT INTO tmp_customer VALUES (json_parametro);
+
+  CREATE TEMPORARY TABLE tmp_address(address_json json);
+  INSERT INTO tmp_address SELECT (customer_json::json -> 'endereco')::json AS Endereco
+  FROM tmp_customer;
+
+  IF codcustomer = 0 THEN
+    RAISE EXCEPTION 'Código cliente não informado: %', codcustomer;
+  END IF;
+
+EXECUTE format('UPDATE customer SET   corporateName       = tempcustomer.corporateName,
+                                      fantasyname         = tempcustomer.fantasyname,
+                                      cpfcnpj             = tempcustomer.cpfcnpj,
+                                      typeperson          = tempcustomer.typeperson,
+                                      status              = tempcustomer.status,
+                                      telephone           = tempcustomer.telephone,
+                                      phone               = tempcustomer.phone
+                    FROM (SELECT
+                        (customer_json ->> %s)::varchar(250) as corporateName,
+                        (customer_json ->> %s)::varchar(250) as fantasyName,
+                        (customer_json ->> %s)::varchar(14) as cpfCnpj,
+                        (customer_json ->> %s)::char(1) as typePerson,
+                        (customer_json ->> %s)::boolean as status,
+                        (customer_json ->> %s)::varchar(20) as telephone,
+                        (customer_json ->> %s)::varchar(20) as phone
+                      FROM tmp_customer) AS tempcustomer
+                    WHERE id = (%s)::int
+                    RETURNING id;
+                ', '''corporatename''', '''fantasyname''', '''cpfcnpj''', '''typeperson''', '''status''', '''telephone''', '''phone''', codcustomer);
+
+   EXECUTE format('UPDATE address SET publicplace  = tempaddress.publicplace,
+                                    "number"      = tempaddress."number",
+                                    complement    = tempaddress.complement,
+                                    district      = tempaddress.district,
+                                    county        = tempaddress.county,
+                                    zipcode       = tempaddress.zipcode,
+                                    uf            = tempaddress.uf,
+                                    id_provider   = tempaddress.id_provider,
+                                    id_person   = tempaddress.id_person
+                  FROM (SELECT
+                          (address_json ->> %s)::varchar(250) as publicPlace,
+                          (address_json ->> %s)::int as number,
+                          (address_json ->> %s)::varchar(150) as complement,
+                          (address_json ->> %s)::varchar(100) as district,
+                          (address_json ->> %s)::varchar(100) as county,
+                          (address_json ->> %s)::varchar(9) as zipCode,
+                          (address_json ->> %s)::char(2) as uf,
+                          (address_json ->> %s)::int as id_provider,
+                          (address_json ->> %s)::int as id_person
+                        FROM tmp_address) AS tempaddress
+                  WHERE id_customer = (%s)::int;
+                ', '''publicplace''', '''number''', '''complement''', '''district''', '''county''', '''zipcode''', '''uf''', '''id_provider''', '''id_person''', codcustomer);
+
+  -- Removendo tabelas temporarias
+  DROP TABLE tmp_customer;
+  DROP TABLE tmp_address;
+  RETURN NEXT codcustomer;
+
+END; $$
+LANGUAGE 'plpgsql';

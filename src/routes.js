@@ -37,5 +37,6 @@ router.put("/provider/:id", authenticate(), ProviderController.update);
 router.get("/customer", authenticate(), CustomerController.index);
 router.get("/customer/:id", authenticate(), CustomerController.show);
 router.post("/customer", authenticate(), CustomerController.store);
+router.put("/customer/:id", authenticate(), CustomerController.update);
 
 module.exports = router;
