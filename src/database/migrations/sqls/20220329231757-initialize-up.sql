@@ -109,6 +109,76 @@ CREATE TABLE IF NOT EXISTS address (
 );
 
 
+DROP SEQUENCE IF EXISTS account_classification_idaccount_classification_seq;
+CREATE SEQUENCE account_classification_idaccount_classification_seq
+                INCREMENT 1
+                MINVALUE 1
+                MAXVALUE 9223372036854775807
+                START 1
+                CACHE 1;
+
+CREATE TABLE IF NOT EXISTS account_classification (
+  id INTEGER NOT NULL DEFAULT nextval('account_classification_idaccount_classification_seq'),
+  decription VARCHAR(100) NOT NULL,
+  CONSTRAINT pk_id_account_classification PRIMARY KEY(id)
+);
+
+INSERT INTO account_classification
+(decription)
+VALUES('Despesa');
+
+INSERT INTO account_classification
+(decription)
+VALUES('Receita');
+
+INSERT INTO account_classification
+(decription)
+VALUES('Investimento');
+
+DROP SEQUENCE IF EXISTS account_type_id_seq;
+CREATE SEQUENCE account_type_id_seq
+                INCREMENT 1
+                MINVALUE 1
+                MAXVALUE 9223372036854775807
+                START 1
+                CACHE 1;
+
+
+
+CREATE TABLE IF NOT EXISTS account_type (
+  id INTEGER NOT NULL DEFAULT nextval('account_type_id_seq'),
+  decription VARCHAR(100) NOT NULL,
+  CONSTRAINT pk_id_account_type PRIMARY KEY(id)
+);
+
+INSERT INTO account_type
+(decription)
+VALUES('Contas a pagar');
+
+INSERT INTO account_type
+(decription)
+VALUES('Contas a receber');
+
+DROP SEQUENCE IF EXISTS result_id_seq;
+CREATE SEQUENCE result_id_seq
+                INCREMENT 1
+                MINVALUE 1
+                MAXVALUE 9223372036854775807
+                START 1
+                CACHE 1;
+
+
+
+CREATE TABLE IF NOT EXISTS "result" (
+  id INTEGER NOT NULL DEFAULT nextval('result_id_seq'),
+  entries DECIMAL NOT NULL,
+  outflows DECIMAL NOT NULL,
+  total DECIMAL NOT NULL,
+  totalInvestment DECIMAL NOT NULL,
+  datecreated TIMESTAMP NOT NULL,
+  CONSTRAINT pk_id_result PRIMARY KEY(id)
+);
+
 CREATE OR REPLACE FUNCTION public.CreatePerson(json_parametro json)
 RETURNS SETOF integer as $$
 DECLARE
