@@ -179,6 +179,38 @@ CREATE TABLE IF NOT EXISTS "result" (
   CONSTRAINT pk_id_result PRIMARY KEY(id)
 );
 
+DROP SEQUENCE IF EXISTS account_id_seq;
+CREATE SEQUENCE account_id_seq
+                INCREMENT 1
+                MINVALUE 1
+                MAXVALUE 9223372036854775807
+                START 1
+                CACHE 1;
+
+
+
+CREATE TABLE IF NOT EXISTS account (
+  id INTEGER NOT NULL DEFAULT nextval('account_id_seq'),
+	id_customer INTEGER,
+	id_provider INTEGER,
+	id_person INTEGER NOT NULL,
+	id_account_classification INTEGER NOT NULL,
+	id_account_type INTEGER NOT NULL,
+	name VARCHAR(150) NOT NULL,
+	value DECIMAL NOT NULL,
+	expiration_date TIMESTAMP NOT NULL,
+	payment_date TIMESTAMP NOT NULL,
+	datecreated TIMESTAMP NOT NULL,
+	status BOOLEAN DEFAULT TRUE,
+  CONSTRAINT pk_id_account PRIMARY KEY(id),
+	CONSTRAINT fk_id_customer FOREIGN KEY (id_customer) REFERENCES customer(id),
+	CONSTRAINT fk_id_provider FOREIGN KEY (id_provider) REFERENCES provider(id),
+	CONSTRAINT fk_id_person FOREIGN KEY (id_person) REFERENCES person(id),
+	CONSTRAINT fk_id_account_classification FOREIGN KEY (id_account_classification) REFERENCES account_classification(id),
+	CONSTRAINT fk_id_account_type FOREIGN KEY (id_account_type) REFERENCES account_type(id)
+);
+
+
 CREATE OR REPLACE FUNCTION public.CreatePerson(json_parametro json)
 RETURNS SETOF integer as $$
 DECLARE
