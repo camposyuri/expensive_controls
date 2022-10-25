@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const AccountController = require("./app/controllers/AccountController");
 const CustomerController = require("./app/controllers/CustomerController");
 const PersonController = require("./app/controllers/PersonController");
 const ProviderController = require("./app/controllers/ProviderController");
@@ -38,5 +39,9 @@ router.get("/customer", authenticate(), CustomerController.index);
 router.get("/customer/:id", authenticate(), CustomerController.show);
 router.post("/customer", authenticate(), CustomerController.store);
 router.put("/customer/:id", authenticate(), CustomerController.update);
+
+// AccountController
+router.get("/account", authenticate(), AccountController.index);
+router.get("/account/:id", authenticate(), AccountController.show);
 
 module.exports = router;
