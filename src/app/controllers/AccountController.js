@@ -22,6 +22,37 @@ class AccountController {
 			next(error);
 		}
 	}
+
+	async store(request, response, next) {
+		try {
+			const body = request.body;
+
+			const account = await AccountRepository.create(body);
+
+			if (account <= 0)
+				return response.status(400).send("Problems creating account");
+
+			return response.json(account);
+		} catch (error) {
+			next(error);
+		}
+	}
+
+	async update(request, response, next) {
+		try {
+			const { id } = request.params;
+			const body = request.body;
+
+			const account = await AccountRepository.update(id, body);
+
+			if (account <= 0)
+				return response.status(400).send("Problem updating account");
+
+			return response.json(account);
+		} catch (error) {
+			next(error);
+		}
+	}
 }
 
 module.exports = new AccountController();

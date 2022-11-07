@@ -616,3 +616,97 @@ EXECUTE format('UPDATE customer SET   corporateName       = tempcustomer.corpora
 
 END; $$
 LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION public.CreateAccount(json_parametro json)
+RETURNS SETOF integer as $$
+DECLARE
+  codaccount int;
+BEGIN
+
+  SET TIMEZONE TO 'America/Sao_Paulo';
+
+  -- Se existir a tabela dropa
+  DROP TABLE IF EXISTS tmp_account;
+
+  -- Cria todas tabelas tempararias para consultar dados
+  CREATE TEMPORARY TABLE tmp_account(account_json json);
+  INSERT INTO tmp_account VALUES (json_parametro);
+
+
+  EXECUTE format('INSERT INTO account (id_customer, id_provider, id_person, id_account_classification, id_account_type, "name", value, expiration_date, payment_date, datecreated, status)
+                      SELECT
+                        (account_json ->> %s)::int as idCustomer,
+                        (account_json ->> %s)::int as idProvider,
+                        (account_json ->> %s)::int as idPerson,
+                        (account_json ->> %s)::int as idAccountClassification,
+                        (account_json ->> %s)::int as idAccountType,
+                        (account_json ->> %s)::varchar(150) as name,
+                        (account_json ->> %s)::decimal as value,
+                        (account_json ->> %s)::timestamp as expirationDate,
+                        (account_json ->> %s)::timestamp as paymentDate,
+                        now(),
+                        (account_json ->> %s)::boolean as status
+                      FROM tmp_account
+                  RETURNING id;
+                ', '''id_customer''', '''id_provider''', '''id_person''', '''id_account_classification''', '''id_account_type''', '''name''', '''value''', '''expiration_date''', '''payment_date''', '''status''') INTO codaccount;
+
+  -- Removendo tabelas temporarias
+  DROP TABLE tmp_account;
+  RETURN NEXT codaccount;
+
+END; $$
+LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION public.UpdateAccount(codaccount int, json_parametro json)
+RETURNS SETOF integer as $$
+DECLARE
+
+BEGIN
+
+  SET TIMEZONE TO 'America/Sao_Paulo';
+
+  -- Se existir a tabela dropa
+  DROP TABLE IF EXISTS tmp_account;
+
+  -- Cria todas tabelas tempararias para consultar dados
+  CREATE TEMPORARY TABLE tmp_account(account_json json);
+  INSERT INTO tmp_account VALUES (json_parametro);
+
+
+  IF codaccount = 0 THEN
+    RAISE EXCEPTION 'Código da conta não informado: %', codaccount;
+  END IF;
+
+  EXECUTE format('UPDATE account SET    id_customer                           = tempaccount.id_customer,
+                                        id_provider                           = tempaccount.id_provider,
+                                        id_person                             = tempaccount.id_person,
+                                        id_account_classification             = tempaccount.id_account_classification,
+                                        id_account_type                       = tempaccount.id_account_type,
+                                        "name"                                = tempaccount."name",
+                                        value                                 = tempaccount.value,
+                                        expiration_date                       = tempaccount.expiration_date,
+                                        payment_date                          = tempaccount.payment_date,
+                                        status                                = tempaccount.status
+                    FROM
+                        (SELECT
+                          (account_json ->> %s)::int as id_customer,
+                          (account_json ->> %s)::int as id_provider,
+                          (account_json ->> %s)::int as id_person,
+                          (account_json ->> %s)::int as id_account_classification,
+                          (account_json ->> %s)::int as id_account_type,
+                          (account_json ->> %s)::varchar(150) as name,
+                          (account_json ->> %s)::decimal as value,
+                          (account_json ->> %s)::timestamp as expiration_date,
+                          (account_json ->> %s)::timestamp as payment_date,
+                          (account_json ->> %s)::boolean as status
+                        FROM tmp_account) AS tempaccount
+                    WHERE id = (%s)::int
+                    RETURNING id;
+                ', '''id_customer''', '''id_provider''', '''id_person''', '''id_account_classification''', '''id_account_type''', '''name''', '''value''', '''expiration_date''', '''payment_date''', '''status''', codaccount);
+
+  -- Removendo tabelas temporarias
+  DROP TABLE tmp_account;
+  RETURN NEXT codaccount;
+
+END; $$
+LANGUAGE 'plpgsql';

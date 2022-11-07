@@ -62,6 +62,39 @@ class AccountRepository {
 			logError(error);
 		}
 	}
+
+	async create(account) {
+		try {
+			const parsedAccountJson = JSON.stringify(account);
+
+			const [row] = await db.query(
+				`
+					SELECT public.CreateAccount($1::json);
+				`,
+				[parsedAccountJson]
+			);
+
+			return row;
+		} catch (error) {
+			logError(error);
+		}
+	}
+
+	async update(id, account) {
+		try {
+			const parsedAccountJson = JSON.stringify(account);
+
+			const [row] = await db.query(
+				`
+					SELECT public.UpdateAccount($1::int, $2::json);
+				`,
+				[id, parsedAccountJson]
+			);
+			return row;
+		} catch (error) {
+			logError(error);
+		}
+	}
 }
 
 module.exports = new AccountRepository();
