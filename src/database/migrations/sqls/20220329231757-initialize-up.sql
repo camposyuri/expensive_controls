@@ -36,7 +36,9 @@ CREATE TABLE IF NOT EXISTS person (
 	phone VARCHAR(20) NOT NULL,
 	dateCreated TIMESTAMP NOT NULL,
 	status BOOLEAN NOT NULL DEFAULT TRUE,
-	CONSTRAINT pk_id_person PRIMARY KEY(id)
+	id_user INTEGER NOT NULL,
+	CONSTRAINT pk_id_person PRIMARY KEY(id),
+	CONSTRAINT fk_id_user FOREIGN KEY (id_user) REFERENCES users(id)
 );
 
 DROP SEQUENCE IF EXISTS provider_idprovider_seq;
@@ -159,26 +161,6 @@ INSERT INTO account_type
 (decription)
 VALUES('Contas a receber');
 
-DROP SEQUENCE IF EXISTS result_id_seq;
-CREATE SEQUENCE result_id_seq
-                INCREMENT 1
-                MINVALUE 1
-                MAXVALUE 9223372036854775807
-                START 1
-                CACHE 1;
-
-
-
-CREATE TABLE IF NOT EXISTS "result" (
-  id INTEGER NOT NULL DEFAULT nextval('result_id_seq'),
-  entries DECIMAL NOT NULL,
-  outflows DECIMAL NOT NULL,
-  total DECIMAL NOT NULL,
-  totalInvestment DECIMAL NOT NULL,
-  datecreated TIMESTAMP NOT NULL,
-  CONSTRAINT pk_id_result PRIMARY KEY(id)
-);
-
 DROP SEQUENCE IF EXISTS account_id_seq;
 CREATE SEQUENCE account_id_seq
                 INCREMENT 1
@@ -231,7 +213,7 @@ BEGIN
   INSERT INTO tmp_address SELECT (person_json::json -> 'endereco')::json AS Endereco
   FROM tmp_person;
 
-  EXECUTE format('INSERT INTO person("name", cpfcnpj, rg, typeperson, birthdate, telephone, phone, datecreated, status)
+  EXECUTE format('INSERT INTO person("name", cpfcnpj, rg, typeperson, birthdate, telephone, phone, datecreated, status, id_user)
                       SELECT
                         (person_json ->> %s)::varchar(250) as name,
                         (person_json ->> %s)::varchar(14) as cpfCnpj,
@@ -241,10 +223,11 @@ BEGIN
                         (person_json ->> %s)::varchar(20) as telephone,
                         (person_json ->> %s)::varchar(20) as phone,
                         now(),
-                        (person_json ->> %s)::boolean as status
+                        (person_json ->> %s)::boolean as status,
+												(person_json ->> %s)::int as id_user
                       FROM tmp_person
                   RETURNING id;
-                ', '''name''', '''cpfcnpj''', '''rg''', '''typeperson''', '''birthdate''', '''telephone''', '''phone''', '''status''') INTO codperson;
+                ', '''name''', '''cpfcnpj''', '''rg''', '''typeperson''', '''birthdate''', '''telephone''', '''phone''', '''status''', '''id_user''') INTO codperson;
 
   IF codperson = 0 THEN
     RAISE EXCEPTION 'Código pessoa não informado: %', codperson;
@@ -298,7 +281,8 @@ BEGIN
                                     birthdate   = tempperson.birthdate,
                                     telephone   = tempperson.telephone,
                                     phone       = tempperson.phone,
-                                    status      = tempperson.status
+                                    status      = tempperson.status,
+																		id_user			= tempperson.id_user
                     FROM (SELECT
                             (person_json ->> %s)::varchar(250) as name,
                             (person_json ->> %s)::varchar(14) as cpfCnpj,
@@ -308,11 +292,12 @@ BEGIN
                             (person_json ->> %s)::varchar(20) as telephone,
                             (person_json ->> %s)::varchar(20) as phone,
                             now(),
-                            (person_json ->> %s)::boolean as status
+                            (person_json ->> %s)::boolean as status,
+														(person_json ->> %s)::int as id_user
                           FROM tmp_person) AS tempperson
                     WHERE id = (%s)::int
                     RETURNING id;
-                ', '''name''', '''cpfcnpj''', '''rg''', '''typeperson''', '''birthdate''', '''telephone''', '''phone''', '''status''', codperson);
+                ', '''name''', '''cpfcnpj''', '''rg''', '''typeperson''', '''birthdate''', '''telephone''', '''phone''', '''status''', '''id_user''' ,codperson);
 
   IF codperson = 0 THEN
     RAISE EXCEPTION 'Código pessoa não informado: %', codperson;

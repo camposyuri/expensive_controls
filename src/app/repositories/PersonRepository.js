@@ -16,7 +16,8 @@ class PersonRepository {
 					telephone,
 					phone,
 					dateCreated,
-					status
+					status,
+					id_user
 				FROM person ORDER BY id ${direction}
 				`
 			);
