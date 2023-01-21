@@ -8,6 +8,7 @@ class SignInRepository {
 				`
 					SELECT
 						id,
+						name,
 						email,
 						password,
 						status,

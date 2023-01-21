@@ -27,7 +27,7 @@ class UserController {
 
 	async store(request, response, next) {
 		try {
-			let { email, password, status, admin } = request.body;
+			let { name, email, password, status, admin } = request.body;
 
 			const usersExists = await UserRepository.findByEmail(email);
 
@@ -42,6 +42,7 @@ class UserController {
 			password = await encryptPassword(password);
 
 			const user = await UserRepository.create({
+				name,
 				email,
 				password,
 				status,

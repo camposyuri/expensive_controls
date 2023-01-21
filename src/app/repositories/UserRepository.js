@@ -8,6 +8,7 @@ class UserRepository {
 			const rows = await db.query(
 				`SELECT
             id,
+						name,
             email,
             datecreated,
             status,
@@ -26,6 +27,7 @@ class UserRepository {
 				`
           SELECT
             id,
+						name,
             email,
             datecreated,
             status,
@@ -47,6 +49,7 @@ class UserRepository {
 				`
           SELECT
             id,
+						name,
             email,
             status,
             admin
@@ -61,17 +64,17 @@ class UserRepository {
 		}
 	}
 
-	async create({ email, password, status, admin }) {
+	async create({ name, email, password, status, admin }) {
 		try {
 			const [row] = await db.query(
 				`
           INSERT INTO users
-            (email, password, status, admin, datecreated)
+            (name, email, password, status, admin, datecreated)
           VALUES
-            ($1, $2, $3, $4, now())
+            ($1, $2, $3, $4, $5, now())
           RETURNING id;
         `,
-				[email, password, status, admin]
+				[name, email, password, status, admin]
 			);
 
 			return row;
@@ -80,19 +83,20 @@ class UserRepository {
 		}
 	}
 
-	async update(id, { email, password, status, admin }) {
+	async update(id, { name, email, password, status, admin }) {
 		try {
 			const [row] = await db.query(
 				`
           UPDATE users
-            SET email = $1,
-            password = $2,
-            status = $3,
-            admin = $4
-          WHERE id = $5
+            SET name = $1,
+						email = $2,
+            password = $3,
+            status = $4,
+            admin = $5
+          WHERE id = $6
           RETURNING id;
         `,
-				[email, password, status, admin, id]
+				[name, email, password, status, admin, id]
 			);
 
 			return row;

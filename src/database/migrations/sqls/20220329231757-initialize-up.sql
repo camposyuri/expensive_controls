@@ -9,6 +9,7 @@ CREATE SEQUENCE users_iduser_seq
 
 CREATE TABLE IF NOT EXISTS users (
   id INTEGER NOT NULL DEFAULT nextval('users_iduser_seq'),
+	name VARCHAR(300) NOT NULL,
   email VARCHAR(100) NOT NULL UNIQUE,
   password VARCHAR(100) NOT NULL,
   dateCreated TIMESTAMP NOT NULL,
