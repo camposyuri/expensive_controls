@@ -30,6 +30,7 @@ class SignInController {
 
 			const payload = {
 				id: usersExists.id,
+				name: usersExists.name,
 				email: usersExists.email,
 				status: usersExists.status,
 				admin: usersExists.admin,
