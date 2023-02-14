@@ -35,27 +35,6 @@ class AccountRepository {
 				ORDER BY a.id ${direction};
 			`);
 
-			// const rows = await db.query(
-			// 	`
-			// 		SELECT
-			// 			id ,
-			// 			id_customer ,
-			// 			id_provider ,
-			// 			id_person ,
-			// 			id_account_classification ,
-			// 			id_account_type ,
-			// 			"name" ,
-			// 			value ,
-			// 			expiration_date ,
-			// 			payment_date ,
-			// 			datecreated ,
-			// 			status
-			// 		FROM
-			// 			account a
-			// 		ORDER BY id ${direction};
-			// 	`
-			// );
-
 			return rows;
 		} catch (error) {
 			logError(error);
