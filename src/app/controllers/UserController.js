@@ -57,7 +57,7 @@ class UserController {
 	async update(request, response, next) {
 		try {
 			const { id } = request.params;
-			let { email, password, status, admin } = request.body;
+			let { name, email, password, status, admin } = request.body;
 			password = await encryptPassword(password);
 
 			const usersExists = await UserRepository.findById(id);
@@ -73,6 +73,7 @@ class UserController {
 					.json({ error: "This e-mail is already in use." });
 
 			const user = await UserRepository.update(id, {
+				name,
 				email,
 				password,
 				status,
