@@ -45,5 +45,15 @@ router.get("/account", authenticate(), AccountController.index);
 router.get("/account/:id", authenticate(), AccountController.show);
 router.post("/account", authenticate(), AccountController.store);
 router.put("/account/:id", authenticate(), AccountController.update);
+router.get(
+	"/account-classification",
+	authenticate(),
+	AccountController.findAccountAllClassification
+);
+router.get(
+	"/account-type",
+	authenticate(),
+	AccountController.findAccountAllType
+);
 
 module.exports = router;

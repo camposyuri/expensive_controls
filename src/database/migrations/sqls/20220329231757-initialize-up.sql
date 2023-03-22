@@ -122,20 +122,20 @@ CREATE SEQUENCE account_classification_idaccount_classification_seq
 
 CREATE TABLE IF NOT EXISTS account_classification (
   id INTEGER NOT NULL DEFAULT nextval('account_classification_idaccount_classification_seq'),
-  decription VARCHAR(100) NOT NULL,
+  description VARCHAR(100) NOT NULL,
   CONSTRAINT pk_id_account_classification PRIMARY KEY(id)
 );
 
 INSERT INTO account_classification
-(decription)
+(description)
 VALUES('Despesa');
 
 INSERT INTO account_classification
-(decription)
+(description)
 VALUES('Receita');
 
 INSERT INTO account_classification
-(decription)
+(description)
 VALUES('Investimento');
 
 DROP SEQUENCE IF EXISTS account_type_id_seq;
@@ -150,16 +150,16 @@ CREATE SEQUENCE account_type_id_seq
 
 CREATE TABLE IF NOT EXISTS account_type (
   id INTEGER NOT NULL DEFAULT nextval('account_type_id_seq'),
-  decription VARCHAR(100) NOT NULL,
+  description VARCHAR(100) NOT NULL,
   CONSTRAINT pk_id_account_type PRIMARY KEY(id)
 );
 
 INSERT INTO account_type
-(decription)
+(description)
 VALUES('Contas a pagar');
 
 INSERT INTO account_type
-(decription)
+(description)
 VALUES('Contas a receber');
 
 DROP SEQUENCE IF EXISTS account_id_seq;

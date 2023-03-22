@@ -103,6 +103,32 @@ class AccountRepository {
 			logError(error);
 		}
 	}
+
+	async findAccountType() {
+		try {
+			const rows = await db.query(
+				`
+					SELECT * FROM account_type;
+				`
+			);
+			return rows;
+		} catch (error) {
+			logError(error);
+		}
+	}
+
+	async findAccountClassification() {
+		try {
+			const rows = await db.query(
+				`
+					SELECT * FROM account_classification;
+				`
+			);
+			return rows;
+		} catch (error) {
+			logError(error);
+		}
+	}
 }
 
 module.exports = new AccountRepository();

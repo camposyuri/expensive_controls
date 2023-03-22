@@ -53,6 +53,24 @@ class AccountController {
 			next(error);
 		}
 	}
+
+	async findAccountAllType(_, response, next) {
+		try {
+			const account = await AccountRepository.findAccountType();
+			return response.json({ results: account });
+		} catch (error) {
+			next(error);
+		}
+	}
+
+	async findAccountAllClassification(_, response, next) {
+		try {
+			const account = await AccountRepository.findAccountClassification();
+			return response.json({ results: account });
+		} catch (error) {
+			next(error);
+		}
+	}
 }
 
 module.exports = new AccountController();
