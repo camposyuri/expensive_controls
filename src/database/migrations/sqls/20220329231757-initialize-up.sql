@@ -174,8 +174,8 @@ CREATE SEQUENCE account_id_seq
 
 CREATE TABLE IF NOT EXISTS account (
   id INTEGER NOT NULL DEFAULT nextval('account_id_seq'),
-	id_customer INTEGER,
-	id_provider INTEGER,
+	id_customer INTEGER NULL,
+	id_provider INTEGER NULL,
 	id_person INTEGER NOT NULL,
 	id_account_classification INTEGER NOT NULL,
 	id_account_type INTEGER NOT NULL,
