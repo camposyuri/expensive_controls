@@ -27,7 +27,7 @@ class UserController {
 
 	async store(request, response, next) {
 		try {
-			let { name, email, password, status, admin } = request.body;
+			let { name, email, password, status, admin, sub } = request.body;
 
 			const usersExists = await UserRepository.findByEmail(email);
 
@@ -47,6 +47,7 @@ class UserController {
 				password,
 				status,
 				admin,
+				sub,
 			});
 			return response.json(user);
 		} catch (error) {
@@ -57,7 +58,7 @@ class UserController {
 	async update(request, response, next) {
 		try {
 			const { id } = request.params;
-			let { name, email, password, status, admin } = request.body;
+			let { name, email, password, status, admin, sub } = request.body;
 			password = await encryptPassword(password);
 
 			const usersExists = await UserRepository.findById(id);
@@ -78,6 +79,7 @@ class UserController {
 				password,
 				status,
 				admin,
+				sub,
 			});
 			return response.json(user);
 		} catch (error) {

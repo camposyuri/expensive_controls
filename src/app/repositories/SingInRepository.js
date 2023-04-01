@@ -12,7 +12,8 @@ class SignInRepository {
 						email,
 						password,
 						status,
-						admin
+						admin,
+						sub
 					FROM users
 					WHERE email = $1
 					LIMIT 1;
