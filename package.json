@@ -4,8 +4,12 @@
 	"description": "Expensive controls",
 	"main": "src/index.js",
 	"author": "Yuri Campos",
+	"engines": {
+		"node": "16.14.0"
+	},
 	"scripts": {
 		"dev": "nodemon src/index.js",
+		"build": "node src/index.js",
 		"dbup": "db-migrate up 20220329231757-initialize-up --config src/database/database.json -m src/database/migrations",
 		"dbdown": "db-migrate down 20220329231757-initialize-down --config src/database/database.json -m src/database/migrations"
 	},
