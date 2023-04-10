@@ -8,10 +8,12 @@ const router = require("./routes");
 const cors = require("./middlewares/cors");
 const app = express();
 
+const PORT = process.env.PORT || 3001
+
 app.use(express.json());
 app.use(cors);
 app.use(router);
 app.use(returnError);
 app.use(logError);
 
-app.listen(8000, () => console.log("Server started "));
+app.listen(PORT, () => console.log("Server started "));
