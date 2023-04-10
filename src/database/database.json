@@ -7,6 +7,6 @@
 		"database": { "ENV": "DB_DATABASE" },
 		"port": { "ENV": "DB_PORT" },
 		"schema": { "ENV": "DB_SCHEMA" },
-		"ssl": "true"
+		"ssl": { "ENV": "SSL" }
 	}
 }
