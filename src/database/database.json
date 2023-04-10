@@ -1,5 +1,5 @@
 {
-	"dev": {
+	"prod": {
 		"driver": "pg",
 		"user": { "ENV": "DB_USER" },
 		"password": { "ENV": "DB_PASSWORD" },
