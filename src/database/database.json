@@ -1,3 +1,12 @@
 {
-	"dev": { "ENV": "DATABASE_URL" }
+	"dev": {
+		"driver": "pg",
+		"user": { "ENV": "DB_USER" },
+		"password": { "ENV": "DB_PASSWORD" },
+		"host": { "ENV": "DB_HOSTNAME" },
+		"database": { "ENV": "DB_DATABASE" },
+		"port": { "ENV": "DB_PORT" },
+		"schema": { "ENV": "DB_SCHEMA" },
+		"ssl": { "ENV": "SSL" }
+	}
 }
