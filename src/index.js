@@ -16,4 +16,4 @@ app.use(router);
 app.use(returnError);
 app.use(logError);
 
-app.listen(port, () => console.log(`Server started port ${port}`));
+app.listen(8080, () => console.log("Server started"));
