@@ -1,5 +1,6 @@
 {
 	"dev": {
-		"database_url": { "ENV": "DATABASE_URL" }
+		"database_url": { "ENV": "DATABASE_URL" },
+		"ssl": { "ENV": "SSL" }
 	}
 }
