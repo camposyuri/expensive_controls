@@ -8,7 +8,7 @@ const router = require("./routes");
 const cors = require("./middlewares/cors");
 const app = express();
 
-const PORT = process.env.redis_port || 3001
+const PORT = process.env.REDIS_PORT || 3001
 
 app.use(express.json());
 app.use(cors);
