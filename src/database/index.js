@@ -7,8 +7,6 @@ const client = new Client({
 	ssl: process.env.SSL,
 });
 
-console.log(client);
-
 client.connect();
 
 exports.query = async (query, values) => {
